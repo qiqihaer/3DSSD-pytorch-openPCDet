@@ -5,8 +5,6 @@ from ...ops.pointnet2.pointnet2_batch import pointnet2_modules
 from ...ops.pointnet2.pointnet2_stack import pointnet2_modules as pointnet2_modules_stack
 from ...ops.pointnet2.pointnet2_stack import pointnet2_utils as pointnet2_utils_stack
 
-from viz_tools.viz_utils import point_viz
-
 
 class SSDBackbone(nn.Module):
     def __init__(self, model_cfg, input_channels, **kwargs):
@@ -58,17 +56,7 @@ class SSDBackbone(nn.Module):
 
         skip_channel_list = [1, 64, 128, 256, 512]
         channel_out = 512
-        # self.FP_modules = nn.ModuleList()
-        #
-        # for k in range(self.model_cfg.FP_MLPS.__len__()):
-        #     pre_channel = self.model_cfg.FP_MLPS[k + 1][-1] if k + 1 < len(self.model_cfg.FP_MLPS) else channel_out
-        #     self.FP_modules.append(
-        #         pointnet2_modules.PointnetFPModule(
-        #             mlp=[pre_channel + skip_channel_list[k]] + self.model_cfg.FP_MLPS[k]
-        #         )
-        #     )
-
-        # self.num_point_features = self.model_cfg.SA_CONFIG.AGGREATION_CHANNEL[-1]
+        
         self.num_point_features = self.model_cfg.FP_MLPS[0][-1]
 
 
@@ -117,28 +105,7 @@ class SSDBackbone(nn.Module):
                 centers_origin = xyz_input
             encoder_xyz.append(li_xyz)
             encoder_features.append(li_features)
-            # if i == 1 or i == 2:
-            #     l_tmp = li_xyz.shape[1] // 2
-            #     xyz_FFPS = li_xyz.data.cpu().numpy()[0][:l_tmp, :]
-            #     point_viz(xyz_FFPS, name=batch_dict['frame_id'][0] + '_{}_FFPS'.format(li_xyz.shape[1]), dump_dir='../dump_viz')
-            #     xyz_DFPS = li_xyz.data.cpu().numpy()[0][l_tmp:, :]
-            #     point_viz(xyz_DFPS, name=batch_dict['frame_id'][0] + '_{}_DFPS'.format(li_xyz.shape[1]),
-            #               dump_dir='../dump_viz')
-            # else:
-            #     xyz_FFPS = li_xyz.data.cpu().numpy()[0]
-            #     point_viz(xyz_FFPS, name=batch_dict['frame_id'][0] + '_{}_FPS'.format(li_xyz.shape[1]),
-            #               dump_dir='../dump_viz')
-
-        # l_xyz = [encoder_xyz[0].contiguous(), encoder_xyz[1].contiguous(), encoder_xyz[2].contiguous(), encoder_xyz[3].contiguous(), encoder_xyz[6].contiguous()]
-        # l_features = [encoder_features[0].contiguous(), encoder_features[1].contiguous(), encoder_features[2].contiguous(), encoder_features[3].contiguous(), encoder_features[6].contiguous()]
-        # for i in range(-1, -(len(self.FP_modules) + 1), -1):
-        #     l_features[i - 1] = self.FP_modules[i](
-        #         l_xyz[i - 1], l_xyz[i], l_features[i - 1], l_features[i]
-        #     )  # (B, C, N)
-
-        # point_features = l_features[0].permute(0, 2, 1).contiguous()  # (B, N, C)
-        # batch_dict['point_features'] = point_features.view(-1, point_features.shape[-1])
-        # batch_dict['point_coords'] = torch.cat((batch_idx[:, None].float(), l_xyz[0].view(-1, 3)), dim=1)
+            
         ctr_batch_idx = batch_idx.view(batch_size, -1)[:, :ctr_offsets.shape[1]]
         ctr_batch_idx = ctr_batch_idx.contiguous().view(-1)
         batch_dict['ctr_offsets'] = torch.cat((ctr_batch_idx[:, None].float(), ctr_offsets.contiguous().view(-1, 3)), dim=1)

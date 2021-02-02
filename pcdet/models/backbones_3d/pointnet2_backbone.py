@@ -5,8 +5,6 @@ from ...ops.pointnet2.pointnet2_batch import pointnet2_modules
 from ...ops.pointnet2.pointnet2_stack import pointnet2_modules as pointnet2_modules_stack
 from ...ops.pointnet2.pointnet2_stack import pointnet2_utils as pointnet2_utils_stack
 
-from viz_tools.viz_utils import point_viz
-
 
 class PointNet2MSG(nn.Module):
     def __init__(self, model_cfg, input_channels, **kwargs):
@@ -85,17 +83,6 @@ class PointNet2MSG(nn.Module):
             li_xyz, li_features = self.SA_modules[i](l_xyz[i], l_features[i], flag_SSD=flag_SSD)
             l_xyz.append(li_xyz)
             l_features.append(li_features)
-            # xyz_FFPS = li_xyz.data.cpu().numpy()[0]
-            # point_viz(xyz_FFPS, name=batch_dict['frame_id'][0] + '_{}_FFPS'.format(li_xyz.shape[1]), dump_dir='../dump_viz')
-
-        # l_xyz, l_features = [xyz], [features]
-        # for i in range(len(self.SA_modules)):
-        #     li_xyz, li_features = self.SA_modules[i](l_xyz[i], l_features[i])
-        #     l_xyz.append(li_xyz)
-        #     l_features.append(li_features)
-        #     xyz_DFPS = li_xyz.data.cpu().numpy()[0]
-        #     point_viz(xyz_DFPS, name=batch_dict['frame_id'][0] + '_{}_DFPS'.format(li_xyz.shape[1]), dump_dir='../dump_viz')
-
 
         for i in range(-1, -(len(self.FP_modules) + 1), -1):
             l_features[i - 1] = self.FP_modules[i](
