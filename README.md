@@ -39,6 +39,9 @@ The trainning log and tensorboard log are saved into output dir
 You can follow the instructions in the [openPCDet](https://github.com/open-mmlab/OpenPCDet/blob/master/docs/GETTING_STARTED.md). Please set the --cfg_file to 'cfgs/kitti_models/3DSSD_openPCDet.yaml'
 
 ## Pretrained Weights
+
+I have tested this code on ubuntu16.04+cuda9.0+pytorch1.1+python3.6+spconv1.0
+
 The pretrained weights are in the output/kitti_models/3DSSD_openPCDet/3DSSD/ckpt/.
 The eval performance on the Car class is as follows:
 ```
