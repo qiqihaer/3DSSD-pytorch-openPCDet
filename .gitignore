@@ -10,5 +10,3 @@ venv/
 *.pkl
 *.zip
 *.bin
-.vscode
-

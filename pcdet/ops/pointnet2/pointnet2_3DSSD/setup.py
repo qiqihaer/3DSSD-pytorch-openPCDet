@@ -5,6 +5,7 @@ setup(
     name='pointnet2_3DSSD',
     ext_modules=[
         CUDAExtension('pointnet2_3DSSD_cuda', [
+            
             'src/pointnet2_api.cpp',
             'src/ball_query.cpp', 
             'src/ball_query_gpu.cu',
